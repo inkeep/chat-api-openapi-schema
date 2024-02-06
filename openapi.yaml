@@ -90,7 +90,7 @@ components:
           title: Chat Session ID
           type: string
         message:
-          $ref: '#/components/schemas/AssistantMessageResponse'
+          $ref: '#/components/schemas/AssistantMessage'
     # ChatResultStream:
     #   title: ChatResultStream
     #   required:
@@ -209,12 +209,10 @@ components:
         chat_mode:
           title: Chat Mode
           oneOf:
-            - const: turbo
-              title: turbo
-              type: string
-            - const: auto
-              title: auto
-              type: string
+            - type: string
+              enum: ["turbo", "auto"]
+              title: ChatModeOptions
+            - type: string
         stream:
           title: Stream
           type: boolean
@@ -260,17 +258,6 @@ components:
         role:
           type: string
           const: "assistant"
-        content:
-          title: Content
-          type: string
-        records_cited:
-          $ref: '#/components/schemas/RecordsCited'
-    AssistantMessageResponse: # remove
-      title: Assistant Message Response
-      required:
-        - content
-      type: object
-      properties:
         content:
           title: Content
           type: string

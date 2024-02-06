@@ -291,6 +291,7 @@ components:
         finish_reason:
           type: string
           enum: ["stop", "length", "content_filter"]
+          nullable: true
     Record:
       required:
         - type

@@ -8,6 +8,9 @@ servers:
     description: Production server
 security:
   - api_key: []
+tags:  # Add this section if it doesn't exist
+  - name: chat_session  # Define the tag used in your operations
+    description: Create and manage chat sessions for users. Chat history and continuation of chat is automatically done.
 paths:
   /v0/chat_sessions/chat_results:
     post:
@@ -206,6 +209,7 @@ components:
         chat_mode:
           title: Chat Mode
           type: string
+          enum: [auto, turbo]
           default: auto
         stream:
           title: Stream

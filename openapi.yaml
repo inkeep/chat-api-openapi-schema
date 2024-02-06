@@ -178,6 +178,7 @@ components:
         hit_url:
           title: Hit URL
           type: string
+          nullable: true
     ContinueChatSessionWithChatResultInput:
       title: Continue Chat Session with Chat Result Input
       required:
@@ -272,6 +273,7 @@ components:
         chat_session_id:
           title: Chat Session ID
           type: string
+          nullable: true
         content_chunk:
           title: Content Chunk
           type: string
@@ -289,10 +291,13 @@ components:
         url:
           title: URL
           type: string
+          nullable: true
         title:
           title: Title
           type: string
+          nullable: true
         breadcrumbs:
+          nullable: true
           title: Breadcrumbs
           type: array
           items:

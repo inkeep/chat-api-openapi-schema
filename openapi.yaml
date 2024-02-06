@@ -209,12 +209,12 @@ components:
         chat_mode:
           title: Chat Mode
           oneOf:
-            - type: string
-              enum:
-                - "turbo"
-            - type: string
-              enum:
-                - "auto"
+            - const: turbo
+              title: turbo
+              type: string
+            - const: auto
+              title: auto
+              type: string
         stream:
           title: Stream
           type: boolean

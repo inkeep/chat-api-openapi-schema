@@ -12,7 +12,8 @@ paths:
   /v0/chat_sessions/chat_results:
     post:
       summary: Create Chat Session and receive a Chat Result
-      operationId: createChatSessionWithChatResult
+      operationId: create
+      tags: [chat_session]
       requestBody:
         content:
           application/json:
@@ -38,7 +39,8 @@ paths:
   /v0/chat_sessions/{chat_session_id}/chat_results:
     post:
       summary: Continue Chat Session and receive a Chat Result
-      operationId: continueChatSessionWithChatResult
+      operationId: continue
+      tags: [chat_session]
       parameters:
         - required: true
           schema:
@@ -85,7 +87,7 @@ components:
           title: Chat Session ID
           type: string
         message:
-          $ref: '#/components/schemas/AssistantMessage'
+          $ref: '#/components/schemas/AssistantMessageResponse'
     # ChatResultStream:
     #   title: ChatResultStream
     #   required:
@@ -250,6 +252,17 @@ components:
         role:
           type: string
           const: "assistant"
+        content:
+          title: Content
+          type: string
+        records_cited:
+          $ref: '#/components/schemas/RecordsCited'
+    AssistantMessageResponse: # remove
+      title: Assistant Message Response
+      required:
+        - content
+      type: object
+      properties:
         content:
           title: Content
           type: string

@@ -32,7 +32,7 @@ paths:
                 $ref: '#/components/schemas/ChatResult'
             text/event-stream:
               schema:
-                $ref: '#/components/schemas/ChatResultStreamEvent'
+                $ref: '#/components/schemas/ChatResultStream'
         '422':
           description: Validation Error
           content:
@@ -66,7 +66,7 @@ paths:
                 $ref: '#/components/schemas/ChatResult'
             text/event-stream:
               schema:
-                $ref: '#/components/schemas/ChatResultStreamEvent'
+                $ref: '#/components/schemas/ChatResultStream'
         '422':
           description: Validation Error
           content:
@@ -109,8 +109,8 @@ components:
     #       oneOf:
     #         - $ref: '#/components/schemas/MessageChunk'
     #         - $ref: '#/components/schemas/RecordsCited'
-    ChatResultStreamEvent:
-      title: Chat Result Stream Event
+    ChatResultStream:
+      title: The event types that can be emitted as part of a streamed Chat Result
       oneOf:
         - $ref: '#/components/schemas/ChatResultMessageChunkEvent'
         - $ref: '#/components/schemas/ChatResultRecordsCitedEvent'
@@ -210,10 +210,11 @@ components:
           title: Chat Mode
           oneOf:
             - type: string
-              const: auto
+              enum:
+                - "turbo"
             - type: string
-              const: turbo
-          default: auto
+              enum:
+                - "auto"
         stream:
           title: Stream
           type: boolean

@@ -8,8 +8,8 @@ servers:
     description: Production server
 security:
   - api_key: []
-tags:  # Add this section if it doesn't exist
-  - name: chat_session  # Define the tag used in your operations
+tags: 
+  - name: chat_session
     description: Create and manage chat sessions for users. Chat history and continuation of chat is automatically done.
 paths:
   /v0/chat_sessions/chat_results:
@@ -208,8 +208,11 @@ components:
           $ref: '#/components/schemas/ChatSessionInput'
         chat_mode:
           title: Chat Mode
-          type: string
-          enum: [auto, turbo]
+          oneOf:
+            - type: string
+              const: auto
+            - type: string
+              const: turbo
           default: auto
         stream:
           title: Stream
@@ -284,9 +287,9 @@ components:
         content_chunk:
           title: Content Chunk
           type: string
-          finish_reason:
-            type: string
-            enum: ["stop", "length", "content_filter"]
+        finish_reason:
+          type: string
+          enum: ["stop", "length", "content_filter"]
     Record:
       required:
         - type

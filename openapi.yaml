@@ -271,6 +271,7 @@ components:
             - type: string
               enum: ["turbo", "auto"]
               title: ChatModeOptions
+              $anchor: ChatModeOptions
             - type: string
         stream:
           title: Stream
@@ -354,6 +355,10 @@ components:
           title: Title
           type: string
           nullable: true
+        description:
+          title: Description
+          type: string
+          nullable: true
         breadcrumbs:
           nullable: true
           title: Breadcrumbs
@@ -361,7 +366,7 @@ components:
           items:
             type: string
     RecordsCited:
-      title: Record Cited
+      title: Records Cited
       required:
         - citations
       type: object
@@ -377,6 +382,7 @@ components:
       oneOf:
         - enum: [documentation, site, discourse_post, github_issue, github_discussion, stackoverflow_question, discord_forum_post, discord_message]
           type: string
+          $anchor: RecordTypeEnumerated
           title: RecordTypeEnumerated
         - title: other
           type: string

@@ -23,6 +23,36 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateChatSessionWithChatResultInput'
         required: true
+      x-codeSamples:
+        - lang: 'typescript'
+          label: 'chat_session'
+          source: |
+            import { InkeepAI } from "@inkeep/ai-api";
+
+            async function run() {
+              const sdk = new InkeepAI({
+                apiKey: "<YOUR_BEARER_TOKEN_HERE>",
+              });
+
+              const result = await sdk.chatSession.create({
+                integrationId: "string",
+                chatSession: {
+                  messages: [
+                    ,
+                  ],
+                },
+              });
+
+              if (res.chatResult == null) {
+                throw new Error("failed to create stream: received null value");
+              }
+              
+              for await (const event of res.chatResult) {
+                // Handle the event
+              }
+            }
+
+            run();
       responses:
         '200':
           description: Successful Response
@@ -57,6 +87,34 @@ paths:
             schema:
               $ref: '#/components/schemas/ContinueChatSessionWithChatResultInput'
         required: true
+      x-codeSamples:
+        - lang: 'typescript'
+          label: 'chat_session'
+          source: |
+            import { InkeepAI } from "@inkeep/ai-api";
+
+            async function run() {
+              const sdk = new InkeepAI({
+                apiKey: "<YOUR_BEARER_TOKEN_HERE>",
+              });
+
+              const chatSessionId = "string";
+              const continueChatSessionWithChatResultInput = {
+                integrationId: "string",
+              };
+              
+              const result = await sdk.chatSession.continue(chatSessionId, continueChatSessionWithChatResultInput);
+
+              if (res.chatResult == null) {
+                throw new Error("failed to create stream: received null value");
+              }
+              
+              for await (const event of res.chatResult) {
+                // Handle the event
+              }
+            }
+
+            run();
       responses:
         '200':
           description: Successful Response

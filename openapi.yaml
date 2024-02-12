@@ -89,7 +89,7 @@ paths:
         required: true
       x-codeSamples:
         - lang: 'typescript'
-          label: 'chat_session'
+          label: 'continue_session'
           source: |
             import { InkeepAI } from "@inkeep/ai-api";
 

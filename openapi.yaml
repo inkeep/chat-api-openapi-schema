@@ -224,7 +224,6 @@ components:
     Citation:
       title: Citation
       required:
-        - number
         - record
       type: object
       properties:
@@ -380,12 +379,12 @@ components:
       title: Record Type
       description: The type of record
       oneOf:
-        - enum: [documentation, site, discourse_post, github_issue, github_discussion, stackoverflow_question, discord_forum_post, discord_message]
+        - enum: [documentation, site, discourse_post, github_issue, github_discussion, stackoverflow_question, discord_forum_post, discord_message, custom_question_answer]
           type: string
           $anchor: RecordTypeEnumerated
           title: RecordTypeEnumerated
-        - title: other
-          type: string
+        - type: string
+          title: other
     ValidationError:
       title: ValidationError
       required:

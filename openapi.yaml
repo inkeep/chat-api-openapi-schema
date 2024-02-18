@@ -31,25 +31,61 @@ paths:
 
             async function run() {
               const sdk = new InkeepAI({
-                apiKey: "<YOUR_BEARER_TOKEN_HERE>",
+                apiKey: "<INKEEP_API_KEY>",
               });
 
               const result = await sdk.chatSession.create({
-                integrationId: "string",
+                integrationId: "<INKEEP_INTEGRATION_ID>",
                 chatSession: {
                   messages: [
-                    ,
+                    {
+                      role: "user",
+                      content: "How do I get started?",
+                    },
                   ],
                 },
+                stream: true,
               });
 
-              if (res.chatResult == null) {
+              /* Example of handling a streamed response */
+              if (res.chatResultStream == null) {
                 throw new Error("failed to create stream: received null value");
               }
-              
-              for await (const event of res.chatResult) {
-                // Handle the event
+
+              let chatSessionId: string | undefined | null = undefined;
+
+              for await (const event of res.chatResultStream) {
+                if (event.event == "message_chunk") {
+                  console.log("Partial message: " + event.data.contentChunk);
+                  chatSessionId = event.data.chatSessionId;
+                }
+                if (event.event == "records_cited") {
+                  console.log("Citations: ", JSON.stringify(event.data.citations, null, 2));
+                }
               }
+
+              if (!chatSessionId) {
+                console.error("No chat session id");
+                return;
+              }
+
+              const continuedChat = await ikp.chatSession.continue(chatSessionId, {
+                integrationId: process.env.INKEEP_INTEGRATION_ID,
+                message: {
+                  role: "user",
+                  content: "What's next?",
+                },
+                stream: false,
+              });
+
+              /* Example of handling a none-streamed response */
+
+              if (continuedChat.chatResult == null) {
+                throw new Error("Empty chat result");
+              }
+
+              console.log("Full message:", continuedChat.chatResult.message.content);
+              console.log("Citations: ", JSON.stringify(continuedChat.chatResult.message.recordsCited, null, 2));
             }
 
             run();

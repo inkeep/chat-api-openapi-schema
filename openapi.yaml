@@ -204,6 +204,14 @@ components:
         - messages
       type: object
       properties:
+        guidance:
+          title: Guidance
+          type: string
+          nullable: true
+        context:
+          title: Context
+          type: string
+          nullable: true
         messages:
           title: Messages
           type: array

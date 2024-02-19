@@ -14,7 +14,7 @@ tags:
 paths:
   /v0/chat_sessions/chat_results:
     post:
-      summary: Create Chat Session and receive a Chat Result
+      summary: Create Chat Session
       operationId: create
       tags: [chat_session]
       requestBody:
@@ -25,7 +25,7 @@ paths:
         required: true
       x-codeSamples:
         - lang: 'typescript'
-          label: 'chat_session'
+          label: 'create_chat_session'
           source: |
             import { InkeepAI } from "@inkeep/ai-api";
 
@@ -63,29 +63,6 @@ paths:
                   console.log("Citations: ", JSON.stringify(event.data.citations, null, 2));
                 }
               }
-
-              if (!chatSessionId) {
-                console.error("No chat session id");
-                return;
-              }
-
-              const continuedChat = await ikp.chatSession.continue(chatSessionId, {
-                integrationId: process.env.INKEEP_INTEGRATION_ID,
-                message: {
-                  role: "user",
-                  content: "What's next?",
-                },
-                stream: false,
-              });
-
-              /* Example of handling a none-streamed response */
-
-              if (continuedChat.chatResult == null) {
-                throw new Error("Empty chat result");
-              }
-
-              console.log("Full message:", continuedChat.chatResult.message.content);
-              console.log("Citations: ", JSON.stringify(continuedChat.chatResult.message.recordsCited, null, 2));
             }
 
             run();
@@ -107,7 +84,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
   /v0/chat_sessions/{chat_session_id}/chat_results:
     post:
-      summary: Continue Chat Session and receive a Chat Result
+      summary: Continue Chat Session
       operationId: continue
       tags: [chat_session]
       parameters:
@@ -125,29 +102,34 @@ paths:
         required: true
       x-codeSamples:
         - lang: 'typescript'
-          label: 'continue_session'
+          label: 'continue_chat_session'
           source: |
             import { InkeepAI } from "@inkeep/ai-api";
 
             async function run() {
               const sdk = new InkeepAI({
-                apiKey: "<YOUR_BEARER_TOKEN_HERE>",
+                apiKey: "<INKEEP_API_KEY>",
               });
 
               const chatSessionId = "string";
-              const continueChatSessionWithChatResultInput = {
-                integrationId: "string",
-              };
-              
-              const result = await sdk.chatSession.continue(chatSessionId, continueChatSessionWithChatResultInput);
 
-              if (res.chatResult == null) {
-                throw new Error("failed to create stream: received null value");
+              const continuedChat = await sdk.chatSession.continue(chatSessionId, {
+                integrationId: "<INKEEP_INTEGRATION_ID>",
+                message: {
+                  role: "user",
+                  content: "What's next?",
+                },
+                stream: false,
+              });
+
+              /* Example of handling a none-streamed response */
+
+              if (continuedChat.chatResult == null) {
+                throw new Error("Empty chat result");
               }
-              
-              for await (const event of res.chatResult) {
-                // Handle the event
-              }
+
+              console.log("Full message:", continuedChat.chatResult.message.content);
+              console.log("Citations: ", JSON.stringify(continuedChat.chatResult.message.recordsCited, null, 2));
             }
 
             run();
@@ -185,24 +167,6 @@ components:
           type: string
         message:
           $ref: '#/components/schemas/AssistantMessage'
-    # ChatResultStream:
-    #   title: ChatResultStream
-    #   required:
-    #     - event
-    #     - data
-    #   type: object
-    #   properties:
-    #     event:
-    #       title: Event
-    #       enum:
-    #         - message_chunk
-    #         - records_cited
-    #       type: string
-    #     data:
-    #       title: Data
-    #       oneOf:
-    #         - $ref: '#/components/schemas/MessageChunk'
-    #         - $ref: '#/components/schemas/RecordsCited'
     ChatResultStream:
       title: The event types that can be emitted as part of a streamed Chat Result
       oneOf:
@@ -214,16 +178,6 @@ components:
         mapping:
           message_chunk: '#/components/schemas/ChatResultMessageChunkEvent'
           records_cited: '#/components/schemas/ChatResultRecordsCitedEvent'
-    # ServerSideEvent:
-    #   type: object
-    #   required: [event, data]
-    #   properties:
-    #     event:
-    #       type: string
-    #       description: The type of event being sent.
-    #     data:
-    #       type: object
-    #       description: The payload of the event
     ChatResultMessageChunkEvent:
       description: A server-sent event containing a chunk of the message.
       type: object
@@ -273,7 +227,7 @@ components:
           type: string
           nullable: true
     ContinueChatSessionWithChatResultInput:
-      title: Continue Chat Session with Chat Result Input
+      title: Continue Chat Session Input
       required:
         - integration_id
         - message
@@ -289,7 +243,7 @@ components:
           type: boolean
           default: false
     CreateChatSessionWithChatResultInput:
-      title: Create Chat Session with Chat Result Input
+      title: Create Chat Session Input
       required:
         - integration_id
         - chat_session

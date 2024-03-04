@@ -185,7 +185,7 @@ components:
       properties:
         event:
           type: string
-          const: "message_chunk"
+          enum: ["message_chunk"]
         data:
           $ref: '#/components/schemas/MessageChunk'
     ChatResultRecordsCitedEvent:
@@ -195,7 +195,7 @@ components:
       properties:
         event:
           type: string
-          const: "records_cited"
+          enum: ["records_cited"]
         data:
           $ref: '#/components/schemas/RecordsCited'
     ChatSessionInput:
@@ -301,7 +301,7 @@ components:
       properties:
         role:
           type: string
-          const: "user"
+          enum: ["user"]
         content:
           title: Content
           type: string
@@ -314,7 +314,7 @@ components:
       properties:
         role:
           type: string
-          const: "assistant"
+          enum: ["assistant"]
         content:
           title: Content
           type: string

@@ -66,6 +66,48 @@ paths:
             }
 
             run();
+        - lang: 'typescript'
+          label: 'create_chat_session_streamed'
+          source: |
+            import { InkeepAI } from "@inkeep/ai-api";
+
+            async function run() {
+              const sdk = new InkeepAI({
+                apiKey: "<INKEEP_API_KEY>",
+              });
+
+              const result = await sdk.chatSession.create({
+                integrationId: "<INKEEP_INTEGRATION_ID>",
+                chatSession: {
+                  messages: [
+                    {
+                      role: "user",
+                      content: "How do I get started?",
+                    },
+                  ],
+                },
+                stream: true,
+              });
+
+              /* Example of handling a streamed response */
+              if (result.chatResultStream == null) {
+                throw new Error("failed to create stream: received null value");
+              }
+
+              let chatSessionId: string | undefined | null = undefined;
+
+              for await (const event of result.chatResultStream) {
+                if (event.event == "message_chunk") {
+                  console.log("Partial message: " + event.data.contentChunk);
+                  chatSessionId = event.data.chatSessionId;
+                }
+                if (event.event == "records_cited") {
+                  console.log("Citations: ", JSON.stringify(event.data.citations, null, 2));
+                }
+              }
+            }
+
+            run();
       responses:
         '200':
           description: Successful Response
@@ -103,6 +145,38 @@ paths:
       x-codeSamples:
         - lang: 'typescript'
           label: 'continue_chat_session'
+          source: |
+            import { InkeepAI } from "@inkeep/ai-api";
+
+            async function run() {
+              const sdk = new InkeepAI({
+                apiKey: "<INKEEP_API_KEY>",
+              });
+
+              const chatSessionId = "<CHAT_SESSION_ID>";
+
+              const continuedChat = await sdk.chatSession.continue(chatSessionId, {
+                integrationId: "<INKEEP_INTEGRATION_ID>",
+                message: {
+                  role: "user",
+                  content: "What's next?",
+                },
+                stream: false,
+              });
+
+              /* Example of handling a non-streamed response */
+
+              if (continuedChat.chatResult == null) {
+                throw new Error("Empty chat result");
+              }
+
+              console.log("Full message:", continuedChat.chatResult.message.content);
+              console.log("Citations: ", JSON.stringify(continuedChat.chatResult.message.recordsCited, null, 2));
+            }
+
+            run();
+        - lang: 'typescript'
+          label: 'continue_chat_session_streamed'
           source: |
             import { InkeepAI } from "@inkeep/ai-api";
 
@@ -185,7 +259,7 @@ components:
       properties:
         event:
           type: string
-          enum: ["message_chunk"]
+          const: "message_chunk"
         data:
           $ref: '#/components/schemas/MessageChunk'
     ChatResultRecordsCitedEvent:
@@ -195,7 +269,7 @@ components:
       properties:
         event:
           type: string
-          enum: ["records_cited"]
+          const: "records_cited"
         data:
           $ref: '#/components/schemas/RecordsCited'
     ChatSessionInput:
@@ -301,7 +375,7 @@ components:
       properties:
         role:
           type: string
-          enum: ["user"]
+          const: "user"
         content:
           title: Content
           type: string
@@ -314,7 +388,7 @@ components:
       properties:
         role:
           type: string
-          enum: ["assistant"]
+          const: "assistant"
         content:
           title: Content
           type: string
@@ -334,8 +408,15 @@ components:
           title: Content Chunk
           type: string
         finish_reason:
-          type: string
-          enum: ["stop", "length", "content_filter"]
+          oneOf:
+            - type: string
+              const: "stop"
+            - type: string
+              const: "length"
+            - type: string
+              const: "content_filter"
+            - type: string
+              enum: ["stop", "length", "content_filter"]
           nullable: true
     Record:
       required:
